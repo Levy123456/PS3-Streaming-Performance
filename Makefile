@@ -6,44 +6,45 @@ endif
 
 include $(PSL1GHT)/ppu_rules
 
-TARGET := PS3StreamingPerformance
-BUILD := build
-SOURCES := Src
-DATA :=
-SHADERS :=
-INCLUDES :=
-TITLE := PS3 Streaming Performance
-APPID := LVP000001
-CONTENTID := UP0001-$(APPID)_00-0000000000000000
+TARGET		:= PS3StreamingPerformance
+BUILD		:= build
+SOURCES		:= Src
+DATA		:=
+SHADERS		:=
+INCLUDES	:=
 
-CFLAGS := -Wall -mcpu=cell $(MACHDEP) $(INCLUDE)
-CXXFLAGS := $(CFLAGS)
-LDFLAGS := $(MACHDEP)
-LIBS := -lrsx -lgcm_sys -lio -lsysutil -lrt -llv2 -lm
+TITLE		:= PS3 Streaming Performance
+APPID		:= LVP000001
+CONTENTID	:= UP0001-$(APPID)_00-0000000000000000
+
+CFLAGS		:= -O2 -Wall -mcpu=cell $(MACHDEP) $(INCLUDE)
+CXXFLAGS	:= $(CFLAGS)
+LDFLAGS		:= $(MACHDEP)
+LIBS		:= -lrsx -lgcm_sys -lio -lsysutil -lrt -llv2 -lm
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 
-export OUTPUT := $(CURDIR)/$(BUILD)/$(TARGET)
-export VPATH := $(foreach dir,$(SOURCES),$(CURDIR)/$(dir))
-export DEPSDIR := $(CURDIR)/$(BUILD)
-export BUILDDIR := $(CURDIR)/$(BUILD)
+export OUTPUT	:= $(CURDIR)/$(BUILD)/$(TARGET)
+export VPATH	:= $(foreach dir,$(SOURCES),$(CURDIR)/$(dir))
+export DEPSDIR	:= $(CURDIR)/$(BUILD)
+export BUILDDIR	:= $(CURDIR)/$(BUILD)
 
-CFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+CFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES	:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 
 ifeq ($(strip $(CPPFILES)),)
-export LD := $(CC)
+export LD	:= $(CC)
 else
-export LD := $(CXX)
+export LD	:= $(CXX)
 endif
 
-export OFILES := $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
+export OFILES	:= $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
 
-export INCLUDE := $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
-	$(LIBPSL1GHT_INC) \
-	-I$(CURDIR)/$(BUILD)
+export INCLUDE	:= $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			   $(LIBPSL1GHT_INC) \
+			   -I$(CURDIR)/$(BUILD)
 
-export LIBPATHS := $(LIBPSL1GHT_LIB)
+export LIBPATHS	:= $(LIBPSL1GHT_LIB)
 
 .PHONY: all clean pkg
 
@@ -54,7 +55,7 @@ $(BUILD):
 	@mkdir -p $(BUILD)
 
 clean:
-	@rm -rf $(BUILD) $(OUTPUT).elf $(OUTPUT).self $(OUTPUT).pkg
+	@rm -rf $(BUILD)
 
 pkg: all
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile $(OUTPUT).pkg
@@ -63,10 +64,7 @@ else
 
 DEPENDS := $(OFILES:.o=.d)
 
-all: $(OUTPUT).self
-
 $(OUTPUT).self: $(OUTPUT).elf
-
 $(OUTPUT).elf: $(OFILES)
 
 -include $(DEPENDS)
