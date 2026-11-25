@@ -6,6 +6,6 @@ CC = ppu-gcc
 CFLAGS = -O2 -Wall
 
 all:
-    $(CC) $(CFLAGS) $(SOURCE) -o $(BUILD)/$(TARGET).elf
+$(CC) $(CFLAGS) $(SOURCE) -o $(BUILD)/$(TARGET).elf
 clean:
-    rm -rf $(BUILD)
+rm -rf $(BUILD)
