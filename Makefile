@@ -5,11 +5,11 @@ SOURCE = Src/main.c
 CC = ppu-gcc
 CFLAGS = -O2 -Wall
 
-all: $(TARGET)
+all: $(BUILD)/$(TARGET).elf
 
-$(TARGET): $(SOURCE)
+$(BUILD)/$(TARGET).elf: $(SOURCE)
 	mkdir -p $(BUILD)
-	$(CC) $(CFLAGS) $(SOURCE) -o $(TARGET)
+	$(CC) $(CFLAGS) $(SOURCE) -o $(BUILD)/$(TARGET).elf
 
 clean:
 	rm -rf $(BUILD)
