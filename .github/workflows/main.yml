@@ -41,15 +41,16 @@ jobs:
           cd "$RUNNER_TEMP/ps3dev-src"
           ./build-all.sh 1 2
 
-      - name: Compilar projeto
+            - name: Compilar e gerar PKG
         run: |
           ppu-gcc --version
-          make clean all
+          make clean pkg
+          test -s build/PS3StreamingPerformance.pkg
           ls -lh build/
 
-      - name: Disponibilizar executavel
+      - name: Disponibilizar PKG
         uses: actions/upload-artifact@v4
         with:
-          name: PS3StreamingPerformance-ELF
-          path: build/PS3StreamingPerformance.elf
+          name: PS3StreamingPerformance-PKG
+          path: build/PS3StreamingPerformance.pkg
           if-no-files-found: error
