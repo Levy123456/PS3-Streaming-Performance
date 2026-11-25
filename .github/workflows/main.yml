@@ -40,8 +40,7 @@ jobs:
           git clone --depth 1 https://github.com/ps3dev/ps3dev.git "$RUNNER_TEMP/ps3dev-src"
           cd "$RUNNER_TEMP/ps3dev-src"
           ./build-all.sh 1 2
-
-            - name: Compilar e gerar PKG
+      - name: Compilar e gerar PKG
         run: |
           ppu-gcc --version
           make clean pkg
@@ -54,3 +53,5 @@ jobs:
           name: PS3StreamingPerformance-PKG
           path: build/PS3StreamingPerformance.pkg
           if-no-files-found: error
+
+                  
