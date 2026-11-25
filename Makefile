@@ -3,7 +3,7 @@ BUILD = build
 SOURCE = Src/main.c
 
 CC = ppu-gcc
-CFLAGS = -02 -Wall
+CFLAGS = -O2 -Wall
 
 all:
     $(CC) $(CFLAGS) $(SOURCE) -o $(BUILD)/$(TARGET).elf
