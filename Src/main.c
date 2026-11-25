@@ -1,4 +1,4 @@
-#includ <stdio.h>
+#include <stdio.h>
 int main(void)
 {
     printf("PS3 Streaming Performance iniciado!\n");
