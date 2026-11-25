@@ -1,45 +1,55 @@
 name: Build PS3 Streaming Performance
+
 on:
-push:
-branches: [main]
-workflow_dispatch:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
 permissions:
-contents: read
+  contents: read
+
 jobs:
-build:
-runs-on: ubuntu-latest
-steps:
-- name: Baixar projeto
-uses: actions/checkout@v4
-- name: Instalar dependencias
-run: |
-sudo apt-get update
-sudo apt-get install -y \
-autoconf automake bison flex gcc \
-libelf-dev make texinfo libncurses-dev \
-patch python-is-python3 python3-dev \
-subversion wget zlib1g-dev libtool \
-libtool-bin bzip2 libgmp-dev pkg-config \
-g++ libssl-dev clang git curl
-- name: Configurar ambiente PS3
-run: |
-echo "PS3DEV=$RUNNER_TEMP/ps3dev" >> $GITHUB_ENV
-echo "PSL1GHT=$RUNNER_TEMP/ps3dev" >> $GITHUB_ENV
-echo "$RUNNER_TEMP/ps3dev/bin" >> $GITHUB_PATH
-echo "$RUNNER_TEMP/ps3dev/ppu/bin" >> $GITHUB_PATH
-echo "$RUNNER_TEMP/ps3dev/spu/bin" >> $GITHUB_PATH
-- name: Preparar PSL1GHT
-run: |
-git clone --depth 1 https://github.com/ps3dev/ps3dev.git "$RUNNER_TEMP/ps3dev-
-src"
-"$RUNNER_TEMP/ps3dev-src/build-all.sh" 1 2
-- name: Compilar projeto
-run: |
-ppu-gcc --version
-make clean allls -lh build/
-- name: Disponibilizar executavel
-uses: actions/upload-artifact@v4
-with:
-name: PS3StreamingPerformance-ELF
-path: build/PS3StreamingPerformance.elf
-if-no-files-found: error
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf automake bison flex gcc \
+            libelf-dev make texinfo libncurses-dev \
+            patch python-is-python3 python3-dev \
+            subversion wget zlib1g-dev libtool \
+            libtool-bin bzip2 libgmp-dev pkg-config \
+            g++ libssl-dev clang git curl
+
+      - name: Configurar ambiente PS3
+        run: |
+          mkdir -p "$RUNNER_TEMP/ps3dev"
+          echo "PS3DEV=$RUNNER_TEMP/ps3dev" >> $GITHUB_ENV
+          echo "PSL1GHT=$RUNNER_TEMP/ps3dev" >> $GITHUB_ENV
+          echo "$RUNNER_TEMP/ps3dev/bin" >> $GITHUB_PATH
+          echo "$RUNNER_TEMP/ps3dev/ppu/bin" >> $GITHUB_PATH
+          echo "$RUNNER_TEMP/ps3dev/spu/bin" >> $GITHUB_PATH
+
+      - name: Preparar PSL1GHT
+        run: |
+          git clone --depth 1 https://github.com/ps3dev/ps3dev.git "$RUNNER_TEMP/ps3dev-src"
+          cd "$RUNNER_TEMP/ps3dev-src"
+          ./build-all.sh 1 2
+
+      - name: Compilar projeto
+        run: |
+          ppu-gcc --version
+          make clean all
+          ls -lh build/
+
+      - name: Disponibilizar executavel
+        uses: actions/upload-artifact@v4
+        with:
+          name: PS3StreamingPerformance-ELF
+          path: build/PS3StreamingPerformance.elf
+          if-no-files-found: error
